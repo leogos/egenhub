@@ -1,7 +1,6 @@
-@import "./typography.css";
-@import "./buttons.css";
 @import "./colors.css";
 @import "./container.css";
+@import "./typography.css";
 :root {
   --background: #ffffff;
   --foreground: #171717;

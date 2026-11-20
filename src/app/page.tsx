@@ -1,4 +1,4 @@
-import { Button, ButtonLink } from "@/components/ui/buttons/button";
+import { Button, ButtonLink } from "@/components/ui/Button/Button";
 import styles from "./page.module.css";
 
 const variants = ["primary", "secondary", "tertiary"] as const;

@@ -8,6 +8,7 @@ import type {
   ButtonHTMLAttributes,
   ReactNode,
 } from "react";
+import styles from "./Button.module.css";
 
 type ButtonVariant = "primary" | "secondary" | "tertiary";
 type ButtonTheme = "lime" | "light" | "dark";
@@ -58,51 +59,30 @@ type ButtonContentViewProps = {
   children?: ReactNode;
 };
 
-type MagneticBase = {
-  buttonX: number;
-  buttonY: number;
-  contentX: number;
-  contentY: number;
-  content: HTMLElement;
-};
-
 type MagneticState = {
+  baseX: number;
+  baseY: number;
+  contentBaseX: number;
+  contentBaseY: number;
   buttonX: (value: number) => void;
   buttonY: (value: number) => void;
   contentX: (value: number) => void;
   contentY: (value: number) => void;
-  base: MagneticBase;
-};
-
-type ButtonRect = {
-  left: number;
-  right: number;
-  top: number;
-  bottom: number;
-  width: number;
-  height: number;
+  content: HTMLElement;
 };
 
 const magneticField = 36;
 const magneticElements = new Set<HTMLElement>();
-const magneticBases = new WeakMap<HTMLElement, MagneticBase>();
 const magneticStates = new WeakMap<HTMLElement, MagneticState>();
 
 let activeMagneticElement: HTMLElement | null = null;
 let pointerListenerAttached = false;
 
-let hoverQuery: MediaQueryList | null = null;
-let reducedMotionQuery: MediaQueryList | null = null;
-
 function supportsMagnetic() {
-  if (typeof window === "undefined") return false;
-
-  hoverQuery ??= window.matchMedia("(hover: hover) and (pointer: fine)");
-  reducedMotionQuery ??= window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
+  return (
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
-
-  return hoverQuery.matches && !reducedMotionQuery.matches;
 }
 
 function getTransformValue(element: HTMLElement, axis: "x" | "y") {
@@ -113,74 +93,83 @@ function getTransformValue(element: HTMLElement, axis: "x" | "y") {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-function getButtonRect(element: HTMLElement): ButtonRect | null {
-  const base = magneticBases.get(element);
+function initializeMagnetic(element: HTMLElement) {
+  if (magneticStates.has(element)) return;
 
-  if (!base) return null;
+  const content = element.querySelector<HTMLElement>(
+    `.${styles["button-content"]}`
+  );
 
-  const rect = element.getBoundingClientRect();
-  const offsetX = getTransformValue(element, "x") - base.buttonX;
-  const offsetY = getTransformValue(element, "y") - base.buttonY;
+  if (!content) return;
 
-  const left = rect.left - offsetX;
-  const top = rect.top - offsetY;
+  const baseX = getTransformValue(element, "x");
+  const baseY = getTransformValue(element, "y");
+  const contentBaseX = getTransformValue(content, "x");
+  const contentBaseY = getTransformValue(content, "y");
 
-  return {
-    left,
-    right: left + rect.width,
-    top,
-    bottom: top + rect.height,
-    width: rect.width,
-    height: rect.height,
+  const state: MagneticState = {
+    baseX,
+    baseY,
+    contentBaseX,
+    contentBaseY,
+    buttonX: gsap.quickTo(element, "x", {
+      duration: 0.3,
+      ease: "power3.out",
+    }),
+    buttonY: gsap.quickTo(element, "y", {
+      duration: 0.3,
+      ease: "power3.out",
+    }),
+    contentX: gsap.quickTo(content, "x", {
+      duration: 0.25,
+      ease: "power3.out",
+    }),
+    contentY: gsap.quickTo(content, "y", {
+      duration: 0.25,
+      ease: "power3.out",
+    }),
+    content,
   };
+
+  magneticStates.set(element, state);
+}
+
+function releaseMagnetic(element: HTMLElement) {
+  const state = magneticStates.get(element);
+
+  if (!state) return;
+
+  gsap.killTweensOf(element);
+  gsap.killTweensOf(state.content);
+
+  gsap.to(element, {
+    x: state.baseX,
+    y: state.baseY,
+    duration: 0.85,
+    ease: "elastic.out(1.3, 0.28)",
+    overwrite: true,
+  });
+
+  gsap.to(state.content, {
+    x: state.contentBaseX,
+    y: state.contentBaseY,
+    duration: 0.85,
+    ease: "elastic.out(1.3, 0.28)",
+    overwrite: true,
+  });
+
+  magneticStates.delete(element);
 }
 
 function getDistanceToRect(
   clientX: number,
   clientY: number,
-  rect: ButtonRect
+  rect: DOMRect
 ) {
   const closestX = Math.max(rect.left, Math.min(clientX, rect.right));
   const closestY = Math.max(rect.top, Math.min(clientY, rect.bottom));
 
   return Math.hypot(clientX - closestX, clientY - closestY);
-}
-
-function initializeMagnetic(element: HTMLElement) {
-  if (magneticStates.has(element)) return;
-
-  const base = magneticBases.get(element);
-
-  if (!base) return;
-
-  gsap.killTweensOf(element);
-  gsap.killTweensOf(base.content);
-
-  const state: MagneticState = {
-    base,
-    buttonX: gsap.quickTo(element, "x", {
-      duration: 0.3,
-      ease: "power3.out",
-      overwrite: "auto",
-    }),
-    buttonY: gsap.quickTo(element, "y", {
-      duration: 0.3,
-      ease: "power3.out",
-      overwrite: "auto",
-    }),
-    contentX: gsap.quickTo(base.content, "x", {
-      duration: 0.25,
-      ease: "power3.out",
-      overwrite: "auto",
-    }),
-    contentY: gsap.quickTo(base.content, "y", {
-      duration: 0.25,
-      ease: "power3.out",
-      overwrite: "auto",
-    }),
-  };
-
-  magneticStates.set(element, state);
 }
 
 function updateMagnetic(
@@ -192,63 +181,29 @@ function updateMagnetic(
   initializeMagnetic(element);
 
   const state = magneticStates.get(element);
-  const rect = getButtonRect(element);
-
-  if (!state || !rect) return;
-
-  const proximity = Math.max(0, 1 - distance / magneticField);
-  const directionX = clientX - (rect.left + rect.width / 2);
-  const directionY = clientY - (rect.top + rect.height / 2);
-
-  const clamp = gsap.utils.clamp;
-
-  const buttonOffsetX = clamp(-14, 14)(
-    directionX * 0.18 * proximity
-  );
-
-  const buttonOffsetY = clamp(-8, 8)(
-    directionY * 0.18 * proximity
-  );
-
-  const contentOffsetX = clamp(-8, 8)(
-    directionX * 0.11 * proximity
-  );
-
-  const contentOffsetY = clamp(-5, 5)(
-    directionY * 0.11 * proximity
-  );
-
-  state.buttonX(state.base.buttonX + buttonOffsetX);
-  state.buttonY(state.base.buttonY + buttonOffsetY);
-  state.contentX(state.base.contentX + contentOffsetX);
-  state.contentY(state.base.contentY + contentOffsetY);
-}
-
-function releaseMagnetic(element: HTMLElement) {
-  const state = magneticStates.get(element);
 
   if (!state) return;
 
-  gsap.killTweensOf(element);
-  gsap.killTweensOf(state.base.content);
+  const rect = element.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  const proximity = Math.max(0, 1 - distance / magneticField);
+  const directionX = clientX - centerX;
+  const directionY = clientY - centerY;
+  const clamp = gsap.utils.clamp;
 
-  gsap.to(element, {
-    x: state.base.buttonX,
-    y: state.base.buttonY,
-    duration: 0.85,
-    ease: "elastic.out(1.3, 0.28)",
-    overwrite: true,
-  });
-
-  gsap.to(state.base.content, {
-    x: state.base.contentX,
-    y: state.base.contentY,
-    duration: 0.85,
-    ease: "elastic.out(1.3, 0.28)",
-    overwrite: true,
-  });
-
-  magneticStates.delete(element);
+  state.buttonX(
+    state.baseX + clamp(-14, 14)(directionX * 0.18 * proximity)
+  );
+  state.buttonY(
+    state.baseY + clamp(-8, 8)(directionY * 0.18 * proximity)
+  );
+  state.contentX(
+    state.contentBaseX + clamp(-8, 8)(directionX * 0.11 * proximity)
+  );
+  state.contentY(
+    state.contentBaseY + clamp(-5, 5)(directionY * 0.11 * proximity)
+  );
 }
 
 function findClosestButton(clientX: number, clientY: number) {
@@ -263,11 +218,11 @@ function findClosestButton(clientX: number, clientY: number) {
       return;
     }
 
-    const rect = getButtonRect(element);
-
-    if (!rect) return;
-
-    const distance = getDistanceToRect(clientX, clientY, rect);
+    const distance = getDistanceToRect(
+      clientX,
+      clientY,
+      element.getBoundingClientRect()
+    );
 
     if (distance <= closestDistance) {
       closestDistance = distance;
@@ -325,17 +280,13 @@ function handleWindowBlur() {
 }
 
 function registerMagnetic(element: HTMLElement) {
-  const content = element.querySelector<HTMLElement>(".button__content");
+  if (!supportsMagnetic()) return;
+
+  const content = element.querySelector<HTMLElement>(
+    `.${styles["button-content"]}`
+  );
 
   if (!content) return;
-
-  magneticBases.set(element, {
-    buttonX: getTransformValue(element, "x"),
-    buttonY: getTransformValue(element, "y"),
-    contentX: getTransformValue(content, "x"),
-    contentY: getTransformValue(content, "y"),
-    content,
-  });
 
   magneticElements.add(element);
 
@@ -354,19 +305,17 @@ function unregisterMagnetic(element: HTMLElement) {
   magneticElements.delete(element);
 
   if (activeMagneticElement === element) {
+    releaseMagnetic(element);
     activeMagneticElement = null;
   }
 
-  const base = magneticBases.get(element);
+  const state = magneticStates.get(element);
 
-  gsap.killTweensOf(element);
-
-  if (base) {
-    gsap.killTweensOf(base.content);
+  if (state) {
+    gsap.killTweensOf(element);
+    gsap.killTweensOf(state.content);
+    magneticStates.delete(element);
   }
-
-  magneticStates.delete(element);
-  magneticBases.delete(element);
 
   if (magneticElements.size === 0 && pointerListenerAttached) {
     window.removeEventListener("pointermove", handleGlobalPointerMove);
@@ -377,20 +326,41 @@ function unregisterMagnetic(element: HTMLElement) {
   }
 }
 
-function useMagneticRef<T extends HTMLElement>() {
-  const ref = useRef<T | null>(null);
+function getButtonClasses(
+  variant: ButtonVariant,
+  theme: ButtonTheme,
+  size: ButtonSize,
+  iconOnly: boolean,
+  className?: string
+) {
+  const variants = {
+    primary: styles["button-primary"],
+    secondary: styles["button-secondary"],
+    tertiary: styles["button-tertiary"],
+  };
 
-  useEffect(() => {
-    const element = ref.current;
+  const themes = {
+    lime: styles["button-theme-lime"],
+    light: styles["button-theme-light"],
+    dark: styles["button-theme-dark"],
+  };
 
-    if (!element) return;
+  const sizes = {
+    sm: styles["button-sm"],
+    md: styles["button-md"],
+    lg: styles["button-lg"],
+  };
 
-    registerMagnetic(element);
-
-    return () => unregisterMagnetic(element);
-  }, []);
-
-  return ref;
+  return [
+    styles.button,
+    variants[variant],
+    themes[theme],
+    sizes[size],
+    iconOnly ? styles["button-icon-only"] : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 }
 
 function setRevealOrigin(
@@ -413,41 +383,22 @@ function setRevealOrigin(
   element.style.setProperty("--button-reveal-radius", `${radius}px`);
 }
 
-function getButtonClassName(
-  variant: ButtonVariant,
-  theme: ButtonTheme,
-  size: ButtonSize,
-  iconOnly: boolean,
-  className?: string
-) {
-  return [
-    "button",
-    `button--${variant}`,
-    `button--theme-${theme}`,
-    `button--${size}`,
-    iconOnly && "button--icon-only",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
-}
-
 function ButtonContent({
   icon,
   iconPosition,
   children,
 }: ButtonContentViewProps) {
   const iconElement = icon ? (
-    <span className="button__icon" aria-hidden="true">
+    <span className={styles["button-icon"]} aria-hidden="true">
       {icon}
     </span>
   ) : null;
 
   return (
-    <span className="button__content">
+    <span className={styles["button-content"]}>
       {iconPosition === "start" && iconElement}
       {children != null && (
-        <span className="button__label">{children}</span>
+        <span className={styles["button-label"]}>{children}</span>
       )}
       {iconPosition === "end" && iconElement}
     </span>
@@ -463,48 +414,50 @@ export function Button({
   className,
   children,
   type = "button",
+  "aria-label": ariaLabel,
   onPointerEnter,
   onPointerMove,
-  onPointerLeave,
   ...props
 }: ButtonProps) {
   const iconOnly = children == null && Boolean(icon);
-  const magneticRef = useMagneticRef<HTMLButtonElement>();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const element = buttonRef.current;
+
+    if (!element) return;
+
+    registerMagnetic(element);
+
+    return () => unregisterMagnetic(element);
+  }, []);
 
   return (
     <button
-      ref={magneticRef}
+      ref={buttonRef}
       type={type}
-      className={getButtonClassName(
+      className={getButtonClasses(
         variant,
         theme,
         size,
         iconOnly,
         className
       )}
+      aria-label={ariaLabel}
       onPointerEnter={(event) => {
         if (event.pointerType === "mouse") {
-          setRevealOrigin(
-            event.currentTarget,
-            event.clientX,
-            event.clientY
-          );
+          setRevealOrigin(event.currentTarget, event.clientX, event.clientY);
         }
 
         onPointerEnter?.(event);
       }}
       onPointerMove={(event) => {
         if (event.pointerType === "mouse") {
-          setRevealOrigin(
-            event.currentTarget,
-            event.clientX,
-            event.clientY
-          );
+          setRevealOrigin(event.currentTarget, event.clientX, event.clientY);
         }
 
         onPointerMove?.(event);
       }}
-      onPointerLeave={onPointerLeave}
       {...props}
     >
       <ButtonContent icon={icon} iconPosition={iconPosition}>
@@ -523,48 +476,50 @@ export function ButtonLink({
   iconPosition = "end",
   className,
   children,
+  "aria-label": ariaLabel,
   onPointerEnter,
   onPointerMove,
-  onPointerLeave,
   ...props
 }: ButtonLinkProps) {
   const iconOnly = children == null && Boolean(icon);
-  const magneticRef = useMagneticRef<HTMLAnchorElement>();
+  const linkRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    const element = linkRef.current;
+
+    if (!element) return;
+
+    registerMagnetic(element);
+
+    return () => unregisterMagnetic(element);
+  }, []);
 
   return (
     <Link
-      ref={magneticRef}
+      ref={linkRef}
       href={href}
-      className={getButtonClassName(
+      className={getButtonClasses(
         variant,
         theme,
         size,
         iconOnly,
         className
       )}
+      aria-label={ariaLabel}
       onPointerEnter={(event) => {
         if (event.pointerType === "mouse") {
-          setRevealOrigin(
-            event.currentTarget,
-            event.clientX,
-            event.clientY
-          );
+          setRevealOrigin(event.currentTarget, event.clientX, event.clientY);
         }
 
         onPointerEnter?.(event);
       }}
       onPointerMove={(event) => {
         if (event.pointerType === "mouse") {
-          setRevealOrigin(
-            event.currentTarget,
-            event.clientX,
-            event.clientY
-          );
+          setRevealOrigin(event.currentTarget, event.clientX, event.clientY);
         }
 
         onPointerMove?.(event);
       }}
-      onPointerLeave={onPointerLeave}
       {...props}
     >
       <ButtonContent icon={icon} iconPosition={iconPosition}>
