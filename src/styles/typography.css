@@ -1,0 +1,162 @@
+:root {
+  --font-display-size: 3rem;
+  --font-h1-size: 2.5rem;
+  --font-h2-size: 2rem;
+  --font-h3-size: 1.5rem;
+  --font-h4-size: 1.25rem;
+  --font-body-large-size: 1.125rem;
+  --font-body-size: 1rem;
+  --font-body-small-size: 0.875rem;
+  --font-label-size: 0.75rem;
+  --font-caption-size: 0.75rem;
+
+  --font-display-weight: 800;
+  --font-h1-weight: 800;
+  --font-h2-weight: 700;
+  --font-h3-weight: 700;
+  --font-h4-weight: 600;
+  --font-body-large-weight: 500;
+  --font-body-weight: 500;
+  --font-body-small-weight: 500;
+  --font-label-weight: 600;
+  --font-caption-weight: 500;
+
+  --font-display-line-height: 0.95;
+  --font-h1-line-height: 1.05;
+  --font-h2-line-height: 1.1;
+  --font-h3-line-height: 1.15;
+  --font-h4-line-height: 1.2;
+  --font-body-large-line-height: 1.6;
+  --font-body-line-height: 1.6;
+  --font-body-small-line-height: 1.5;
+  --font-label-line-height: 1.3;
+  --font-caption-line-height: 1.4;
+
+  --font-display-letter-spacing: -0.05em;
+  --font-h1-letter-spacing: -0.04em;
+  --font-h2-letter-spacing: -0.035em;
+  --font-h3-letter-spacing: -0.025em;
+  --font-h4-letter-spacing: -0.015em;
+  --font-body-large-letter-spacing: 0;
+  --font-body-letter-spacing: 0;
+  --font-body-small-letter-spacing: 0;
+  --font-label-letter-spacing: 0.04em;
+  --font-caption-letter-spacing: 0;
+}
+
+body {
+  font-size: var(--font-body-size);
+  font-weight: var(--font-body-weight);
+  line-height: var(--font-body-line-height);
+}
+
+.type-display {
+  font-size: var(--font-display-size);
+  font-weight: var(--font-display-weight);
+  line-height: var(--font-display-line-height);
+  letter-spacing: var(--font-display-letter-spacing);
+}
+
+.type-h1 {
+  font-size: var(--font-h1-size);
+  font-weight: var(--font-h1-weight);
+  line-height: var(--font-h1-line-height);
+  letter-spacing: var(--font-h1-letter-spacing);
+}
+
+.type-h2 {
+  font-size: var(--font-h2-size);
+  font-weight: var(--font-h2-weight);
+  line-height: var(--font-h2-line-height);
+  letter-spacing: var(--font-h2-letter-spacing);
+}
+
+.type-h3 {
+  font-size: var(--font-h3-size);
+  font-weight: var(--font-h3-weight);
+  line-height: var(--font-h3-line-height);
+  letter-spacing: var(--font-h3-letter-spacing);
+}
+
+.type-h4 {
+  font-size: var(--font-h4-size);
+  font-weight: var(--font-h4-weight);
+  line-height: var(--font-h4-line-height);
+  letter-spacing: var(--font-h4-letter-spacing);
+}
+
+.type-body-large {
+  font-size: var(--font-body-large-size);
+  font-weight: var(--font-body-large-weight);
+  line-height: var(--font-body-large-line-height);
+  letter-spacing: var(--font-body-large-letter-spacing);
+}
+
+.type-body {
+  font-size: var(--font-body-size);
+  font-weight: var(--font-body-weight);
+  line-height: var(--font-body-line-height);
+  letter-spacing: var(--font-body-letter-spacing);
+}
+
+.type-body-small {
+  font-size: var(--font-body-small-size);
+  font-weight: var(--font-body-small-weight);
+  line-height: var(--font-body-small-line-height);
+  letter-spacing: var(--font-body-small-letter-spacing);
+}
+
+.type-label {
+  font-size: var(--font-label-size);
+  font-weight: var(--font-label-weight);
+  line-height: var(--font-label-line-height);
+  letter-spacing: var(--font-label-letter-spacing);
+}
+
+.type-caption {
+  font-size: var(--font-caption-size);
+  font-weight: var(--font-caption-weight);
+  line-height: var(--font-caption-line-height);
+  letter-spacing: var(--font-caption-letter-spacing);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --font-display-size: 3.5rem;
+    --font-h1-size: 2.75rem;
+    --font-h2-size: 2.25rem;
+    --font-h3-size: 1.625rem;
+    --font-h4-size: 1.375rem;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --font-display-size: 4rem;
+    --font-h1-size: 3rem;
+    --font-h2-size: 2.5rem;
+    --font-h3-size: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --font-display-size: 5rem;
+    --font-h1-size: 3.75rem;
+    --font-h2-size: 3rem;
+    --font-h3-size: 2rem;
+    --font-h4-size: 1.5rem;
+    --font-body-large-size: 1.25rem;
+    --font-label-size: 0.8125rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --font-display-size: 6rem;
+    --font-h1-size: 4.5rem;
+    --font-h2-size: 3.5rem;
+    --font-h3-size: 2.25rem;
+    --font-h4-size: 1.75rem;
+  }
+}
