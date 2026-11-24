@@ -194,12 +194,12 @@ export function useWorkAnimation(
     );
 
     media.add(
-      "(min-width: 640px) and (max-width: 1279px) and (prefers-reduced-motion: no-preference)",
+      "(min-width: 640px) and (max-width: 1157px) and (prefers-reduced-motion: no-preference)",
       () => createAnimation(2)
     );
 
     media.add(
-      "(min-width: 1280px) and (prefers-reduced-motion: no-preference)",
+      "(min-width: 1158px) and (prefers-reduced-motion: no-preference)",
       () => createAnimation(5)
     );
 

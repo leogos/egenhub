@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -19,19 +20,40 @@ export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+
   useHeaderMenuAnimation(menuRef, isOpen);
 
   useEffect(() => {
     if (!isOpen) return;
 
-    const previousOverflow = document.body.style.overflow;
-    const previousPaddingRight = document.body.style.paddingRight;
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const html = document.documentElement;
+    const body = document.body;
+    const scrollY = window.scrollY;
 
-    document.body.style.overflow = "hidden";
+    const previousHtmlOverflow = html.style.overflow;
+    const previousBodyPosition = body.style.position;
+    const previousBodyTop = body.style.top;
+    const previousBodyLeft = body.style.left;
+    const previousBodyRight = body.style.right;
+    const previousBodyWidth = body.style.width;
+    const previousBodyOverflow = body.style.overflow;
+    const previousBodyPaddingRight = body.style.paddingRight;
+
+    const scrollbarWidth = window.innerWidth - html.clientWidth;
+    const currentPaddingRight =
+      Number.parseFloat(getComputedStyle(body).paddingRight) || 0;
+
+    html.style.overflow = "hidden";
+
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
 
     if (scrollbarWidth > 0) {
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
+      body.style.paddingRight = `${currentPaddingRight + scrollbarWidth}px`;
     }
 
     const firstLink = menuRef.current?.querySelector<HTMLAnchorElement>(
@@ -68,12 +90,38 @@ export function Header() {
       }
     };
 
+    const handleTouchMove = (event: TouchEvent) => {
+      const target = event.target;
+
+      if (
+        !(target instanceof Node) ||
+        !menuRef.current?.contains(target)
+      ) {
+        event.preventDefault();
+      }
+    };
+
     window.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("touchmove", handleTouchMove, {
+      passive: false,
+    });
 
     return () => {
-      document.body.style.overflow = previousOverflow;
-      document.body.style.paddingRight = previousPaddingRight;
       window.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("touchmove", handleTouchMove);
+
+      html.style.overflow = previousHtmlOverflow;
+
+      body.style.position = previousBodyPosition;
+      body.style.top = previousBodyTop;
+      body.style.left = previousBodyLeft;
+      body.style.right = previousBodyRight;
+      body.style.width = previousBodyWidth;
+      body.style.overflow = previousBodyOverflow;
+      body.style.paddingRight = previousBodyPaddingRight;
+
+      window.scrollTo(0, scrollY);
+
       toggleRef.current?.focus();
     };
   }, [isOpen]);
@@ -141,10 +189,7 @@ export function Header() {
           className={styles["site-menu-content"]}
           data-menu-content
         >
-          <div className={styles["site-menu-topline"]}>
-            <span>EXPLORE EGENHUB</span>
-            <span>MENU / 001—004</span>
-          </div>
+
 
           <nav
             className={styles["site-menu-navigation"]}
@@ -173,10 +218,7 @@ export function Header() {
             ))}
           </nav>
 
-          <div className={styles["site-menu-bottom"]}>
-            <span>IDEAS INTO DIGITAL EXPERIENCES.</span>
-            <span>eGenHub © 2026</span>
-          </div>
+
         </div>
       </div>
     </>

@@ -136,7 +136,7 @@ export function Work() {
                       src={project.image}
                       alt={project.imageAlt}
                       fill
-                      sizes="(min-width: 1280px) calc(20vw - 24px), (min-width: 640px) calc(50vw - 24px), calc(100vw - 20px)"
+                      sizes="(min-width: 1158px) calc(20vw - 24px), (min-width: 640px) calc(50vw - 24px), calc(100vw - 20px)"
                       quality={80}
                       loading="lazy"
                     />

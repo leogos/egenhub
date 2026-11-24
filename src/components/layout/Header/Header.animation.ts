@@ -33,7 +33,7 @@ export function useHeaderMenuAnimation(
 
     if (panels.length !== 6 || !content) return;
 
-    const desktop = window.matchMedia("(min-width: 1280px)").matches;
+    const desktop = window.matchMedia("(min-width: 1158px)").matches;
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;

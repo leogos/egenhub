@@ -263,7 +263,7 @@
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1158px) {
   .work-container {
   padding-inline: 48px;
 }
@@ -328,7 +328,7 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) and (min-width: 1280px) {
+@media (prefers-reduced-motion: reduce) and (min-width: 1158px) {
   .work-project {
     flex-basis: 20%;
   }
