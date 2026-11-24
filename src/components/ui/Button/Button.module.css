@@ -221,3 +221,23 @@
     transform: none;
   }
 }
+
+
+.button-theme-violet {
+  --button-fill: var(--color-violet-primary);
+  --button-solid-text: var(--color-background);
+  --button-outline-text: var(--color-violet-light);
+  --button-outline-border: var(--color-violet-primary);
+  --button-fill-border: var(--color-violet-primary);
+  --button-hover-fill: var(--color-violet-bright);
+  --button-hover-text: var(--color-background);
+}
+
+.button-theme-violet.button-secondary {
+  --button-hover-fill: var(--color-violet-primary);
+}
+
+.button-theme-violet.button-tertiary {
+  --button-hover-fill: var(--color-violet-dark);
+  --button-hover-text: var(--color-violet-light);
+}

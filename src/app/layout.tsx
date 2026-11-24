@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import localFont from "next/font/local";
 import { Header } from "@/components/layout/Header/Header";
-import { IntroAnimation } from "@/components/animations/Intro/Intro.animation";
 import "../styles/globals.css";
 
 const manrope = localFont({
@@ -29,7 +28,6 @@ export default function RootLayout({
           <Header />
           {children}
         </div>
-        <IntroAnimation />
       </body>
     </html>
   );

@@ -32,7 +32,7 @@
   flex: 0 0 auto;
   width: 27px;
   height: 27px;
-  background-color: var(--color-primary);
+  background: var(--gradient-brand);
   -webkit-mask: url("/icons/logo.svg") center / contain no-repeat;
   mask: url("/icons/logo.svg") center / contain no-repeat;
 }

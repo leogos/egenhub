@@ -11,3 +11,19 @@
   --color-text: #F0F5ED;
   --color-text-muted: #84938A;
 }
+
+
+:root {
+  --color-violet-primary: #8B75FF;
+  --color-violet-bright: #A78BFF;
+  --color-violet-light: #C5A8FF;
+  --color-violet-glow: #7C3CFF;
+  --color-violet-deep: #5424C7;
+  --color-violet-dark: #241044;
+  --color-violet-background: #110B20;
+}
+
+
+:root {
+  --gradient-brand: linear-gradient(125deg, #B7FF3C 0%, #B7FF3C 58%, #50E3A4 78%, #8B75FF 100%);
+}

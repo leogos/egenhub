@@ -11,7 +11,7 @@ import type {
 import styles from "./Button.module.css";
 
 type ButtonVariant = "primary" | "secondary" | "tertiary";
-type ButtonTheme = "lime" | "light" | "dark";
+type ButtonTheme = "lime" | "light" | "dark" | "violet";
 type ButtonSize = "sm" | "md" | "lg";
 type IconPosition = "start" | "end";
 
@@ -343,6 +343,7 @@ function getButtonClasses(
     lime: styles["button-theme-lime"],
     light: styles["button-theme-light"],
     dark: styles["button-theme-dark"],
+    violet: styles["button-theme-violet"],
   };
 
   const sizes = {

@@ -1,0 +1,96 @@
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - 64px);
+  min-height: calc(100svh - 64px);
+  align-items: center;
+  overflow: hidden;
+  padding-block: clamp(76px, 12vh, 144px);
+  padding-inline: 20px;
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+.dot-field {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
+.title {
+  color: var(--color-text);
+  font-size: clamp(3rem, 8vw, 8rem);
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: -0.06em;
+  text-wrap: balance;
+}
+
+.title span {
+  display: block;
+}
+
+.description {
+  display: grid;
+  gap: 4px;
+  margin-top: clamp(28px, 4vw, 48px);
+  color: var(--color-text-muted);
+  font-size: clamp(0.875rem, 1.5vw, 1.25rem);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.015em;
+}
+
+.description span {
+  display: block;
+}
+
+@media (min-width: 640px) {
+  .hero {
+    padding-inline: 24px;
+  }
+
+  .description {
+    margin-top: 40px;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero {
+    padding-inline: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    padding-inline: 40px;
+  }
+
+  .description {
+    margin-top: 44px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .hero {
+    padding-inline: 48px;
+  }
+
+  .description {
+    margin-top: 48px;
+  }
+}
