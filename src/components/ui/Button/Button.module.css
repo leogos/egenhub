@@ -152,8 +152,8 @@
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  width: 1em;
-  height: 1em;
+  width: var(--button-icon-size, 1em);
+  height: var(--button-icon-size, 1em);
   transition: transform 180ms ease;
 }
 

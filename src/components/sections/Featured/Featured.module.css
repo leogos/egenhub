@@ -155,6 +155,64 @@
   transform: translateY(0);
 }
 
+
+.featured-value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+}
+
+.featured-symbol {
+  display: inline-block;
+  color: var(--color-text);
+  font-size: clamp(3rem, 5.5vw, 5.25rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.065em;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.featured-percent {
+  display: block;
+  width: 0.72em;
+  height: 0.85em;
+  overflow: visible;
+}
+
+
+.featured-value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  font-size: clamp(3rem, 5.5vw, 5.25rem);
+}
+
+.featured-symbol {
+  display: inline-block;
+  color: var(--color-text);
+  font-size: clamp(3rem, 5.5vw, 5.25rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.065em;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.featured-percent {
+  display: block;
+  position: relative;
+  top: 3px;
+  flex: none;
+  width: 0.72em;
+  height: 0.81em;
+  align-self: center;
+  overflow: visible;
+}
+
+
 @keyframes featured-gradient-flow {
   from {
     background-position: 0% 50%;

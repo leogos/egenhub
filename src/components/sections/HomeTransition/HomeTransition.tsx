@@ -30,10 +30,11 @@ export function HomeTransition() {
         scrollTrigger: {
           trigger: container,
           start: "top top",
-          end: "bottom bottom",
+          end: () => "+=" + container.offsetHeight,
           scrub: 1,
           pin: stage,
           anticipatePin: 1,
+          pinSpacing: false,
           invalidateOnRefresh: true,
         },
       });
@@ -65,7 +66,8 @@ export function HomeTransition() {
           opacity: 0,
           ease: "none",
           duration: 0.25,
-        }, 0.65);
+        }, 0.65)
+        .to({}, { duration: 1.15 });
     }, container);
 
     return () => context.revert();

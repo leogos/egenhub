@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, type RefObject } from "react";
@@ -193,7 +192,8 @@ export function useFeaturedParticles(
         pointerY < height;
 
       particles.forEach((particle, index) => {
-        const angle = rotation * (0.25 + particle.speed * 150) + particle.phase;
+        const angle =
+          rotation * (0.25 + particle.speed * 150) + particle.phase;
 
         const orbitX =
           particle.x * Math.cos(angle) -
@@ -246,7 +246,8 @@ export function useFeaturedParticles(
     };
 
     const handlePointerMove = (event: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect();
+      const rect = section.getBoundingClientRect();
+
       pointerX = event.clientX - rect.left;
       pointerY = event.clientY - rect.top;
 
@@ -278,8 +279,10 @@ export function useFeaturedParticles(
     resizeObserver.observe(section);
     visibilityObserver.observe(section);
 
-    canvas.addEventListener("pointermove", handlePointerMove);
-    canvas.addEventListener("pointerleave", handlePointerLeave);
+    section.addEventListener("pointermove", handlePointerMove, {
+      passive: true,
+    });
+    section.addEventListener("pointerleave", handlePointerLeave);
 
     resize();
 
@@ -287,8 +290,8 @@ export function useFeaturedParticles(
       window.cancelAnimationFrame(animationFrame);
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
-      canvas.removeEventListener("pointermove", handlePointerMove);
-      canvas.removeEventListener("pointerleave", handlePointerLeave);
+      section.removeEventListener("pointermove", handlePointerMove);
+      section.removeEventListener("pointerleave", handlePointerLeave);
     };
   }, [sectionRef, canvasRef]);
 }
