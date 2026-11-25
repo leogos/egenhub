@@ -3,7 +3,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { gsap } from "gsap";
 import styles from "./Header.module.css";
 import { useHeaderMenuAnimation } from "./Header.animation";
 
@@ -28,6 +27,7 @@ export function Header() {
 
     const html = document.documentElement;
     const body = document.body;
+    const toggleButton = toggleRef.current;
     const scrollY = window.scrollY;
 
     const previousHtmlOverflow = html.style.overflow;
@@ -57,7 +57,7 @@ export function Header() {
     }
 
     const firstLink = menuRef.current?.querySelector<HTMLAnchorElement>(
-      "nav a"
+      "nav a",
     );
 
     firstLink?.focus();
@@ -69,7 +69,7 @@ export function Header() {
 
       if (event.key === "Tab") {
         const links = menuRef.current?.querySelectorAll<HTMLAnchorElement>(
-          "nav a"
+          "nav a",
         );
 
         if (!links?.length) return;
@@ -122,7 +122,7 @@ export function Header() {
 
       window.scrollTo(0, scrollY);
 
-      toggleRef.current?.focus();
+      toggleButton?.focus();
     };
   }, [isOpen]);
 
@@ -189,8 +189,6 @@ export function Header() {
           className={styles["site-menu-content"]}
           data-menu-content
         >
-
-
           <nav
             className={styles["site-menu-navigation"]}
             aria-label="Main navigation"
@@ -217,8 +215,6 @@ export function Header() {
               </Link>
             ))}
           </nav>
-
-
         </div>
       </div>
     </>

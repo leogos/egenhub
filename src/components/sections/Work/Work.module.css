@@ -333,3 +333,17 @@
     flex-basis: 20%;
   }
 }
+
+@media (max-width: 1157px) {
+  .work-container {
+    padding-inline: 0;
+  }
+
+  .work-project:first-child {
+    padding-left: 0;
+  }
+
+  .work-viewport {
+    touch-action: pan-y;
+  }
+}
